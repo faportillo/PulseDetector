@@ -188,7 +188,7 @@ void receive_process(){
     //Report("%i\n\r",rxBuffer[1]);
     temp = ((rxBuffer[1]>>3) | ((rxBuffer[0] & 0x1F)<<5));
     //Report("%i\t\n\r",(temp));
-    //temp = (int)temp*(int)temp;
+    temp = (int)temp*(int)temp;
     newAvg = exp_moving_avg(temp,newAvg,0.1);
     temp = newAvg;//-650;
     adc_arr[adc_arr_idx] = (double)temp;
