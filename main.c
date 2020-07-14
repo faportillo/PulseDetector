@@ -56,13 +56,6 @@ extern void (* const g_pfnVectors[])(void);
 extern uVectorEntry __vector_table;
 #endif
 
-typedef enum{
-    Step1,
-    Step2,
-    Step3,
-    Step4
-}StepperState;
-
 typedef float real;
 typedef struct { real Re; real Im; } complex;
 
@@ -76,7 +69,6 @@ unsigned char temp2;
 
 //Averaging filter
 float newAvg=0;
-StepperState step = Step1;
 //FFT
 double adc_arr[N];
 static int adc_arr_idx=0;
@@ -153,11 +145,10 @@ void IFFT(complex *v, int n, complex *tmp){
     return;
 }
 
-float get_freq(complex adc_d[],complex scratch[]){
+float get_freq(complex adc_d[], complex scratch[]){
     double frequency = 0;
     FFT(adc_d,N,scratch);
-    max = sqrt((adc_d[1].Re*adc_d[1].Re)+(adc_d[1].Im*adc_d[1].Im));//adc_d[0] is the DC component
-    //FFT2(adc_d,N);
+    max = sqrt((adc_d[1].Re*adc_d[1].Re)+(adc_d[1].Im*adc_d[1].Im)); //adc_d[0] is the DC component
     int idx;
     int abs_complex=0;
     for(idx=1;idx<N;idx++){
