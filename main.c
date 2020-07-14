@@ -32,8 +32,6 @@
 
 #include "pin_mux_config.h"
 
-#define APPLICATION_VERSION     "1.1.1"
-
 #define MASTER_MODE 0
 #define SPI_IF_BIT_RATE 500000
 #define TR_BUFF_SIZE 2
@@ -86,8 +84,13 @@ double max;
 //*****************************************************************************
 //                      LOCAL FUNCTION PROTOTYPES                           
 //*****************************************************************************
-void BinCount(void);
 static void BoardInit(void);
+void FFT(complex *v, int n, complex *tmp);
+void IFFT(complex *v, int n, complex *tmp);
+float get_freq(complex adc_d[], complex scratch[]);
+void MasterConfig();
+int exp_moving_avg(float in, float avg, float alpha);
+void receive_process();
 
 //*****************************************************************************
 //                      LOCAL FUNCTION DEFINITIONS                         
