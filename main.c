@@ -39,7 +39,7 @@
 //fft
 #define SAMPLING_RATE 472.1//500
 #define PI 3.14159265358979323846264338327950288
-#define q 12 //2^q points
+#define q 10 //2^q points
 #define N (1<<q) //N-point fft
 
 #define PREP_MESSAGE "READY TO RECEIVE DATA"
