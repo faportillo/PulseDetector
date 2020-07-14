@@ -94,9 +94,7 @@ double max;
 //*****************************************************************************
 //                      LOCAL FUNCTION PROTOTYPES                           
 //*****************************************************************************
-void LEDBlinkyRoutine();
 void BinCount(void);
-void Stepper(void);
 static void BoardInit(void);
 
 //*****************************************************************************
@@ -210,11 +208,11 @@ void receive_process(){
     Report("%f\r\n",adc_vec[adc_arr_idx].Re);
 
     if(adc_arr_idx==N-1){
-        //f = get_freq(adc_vec, temp_fft);
+        f = get_freq(adc_vec, temp_fft);
         adc_arr_idx=0;
         //f*=2;
-        //Report("\n%.0f BPM\n\r",f*60);
-        //UtilsDelay(40000000);
+        Report("\n%.0f BPM\n\r",f*60);
+        UtilsDelay(40000000);
     }
     else{
         adc_arr_idx++;
@@ -255,57 +253,9 @@ BoardInit(void)
     PRCMCC3200MCUInit();
 }
 
-
-void HeartBeat(){
-    switch(step){
-        default:
-        case Step1:
-            //step1
-            GPIOPinWrite(GPIOA0_BASE, 1<<6, 1<<6);
-            GPIOPinWrite(GPIOA1_BASE, 1<<2, 0<<2);
-            GPIOPinWrite(GPIOA0_BASE, 1<<7, 1<<7);
-            GPIOPinWrite(GPIOA0_BASE, 1<<5, 0<<5);
-            step = Step2;
-            break;
-        case Step2:
-            //step2
-            GPIOPinWrite(GPIOA0_BASE, 1<<6, 1<<6);
-            GPIOPinWrite(GPIOA1_BASE, 1<<2, 0<<2);
-            GPIOPinWrite(GPIOA0_BASE, 1<<7, 0<<7);
-            GPIOPinWrite(GPIOA0_BASE, 1<<5, 1<<5);
-            step = Step3;
-            break;
-        case Step3:
-            //step3
-            GPIOPinWrite(GPIOA0_BASE, 1<<6, 0<<6);
-            GPIOPinWrite(GPIOA1_BASE, 1<<2, 1<<2);
-            GPIOPinWrite(GPIOA0_BASE, 1<<7, 0<<7);
-            GPIOPinWrite(GPIOA0_BASE, 1<<5, 1<<5);
-            step = Step4;
-            break;
-        case Step4:
-            //step4
-            GPIOPinWrite(GPIOA0_BASE, 1<<6, 0<<6);
-            GPIOPinWrite(GPIOA1_BASE, 1<<2, 1<<2);
-            GPIOPinWrite(GPIOA0_BASE, 1<<7, 1<<7);
-            GPIOPinWrite(GPIOA0_BASE, 1<<5, 0<<5);
-            step = Step1;
-            break;
-
-    }
-    /*if(pulse_rate>=600 && pulse_rate<2000){
-        UtilsDelay(pulse_delay);
-    }*/
-}
 //****************************************************************************
 //
 //! Main function
-//!
-//! \param none
-//! 
-//! This function  
-//!    1. Invokes the LEDBlinkyTask
-//!
 //! \return None.
 //
 //****************************************************************************
@@ -318,10 +268,6 @@ main()
     //
     BoardInit();
     
-    //
-    // Power on the corresponding GPIO port B for 9,10,11.
-    // Set up the GPIO lines to mode 0 (GPIO)
-    //
     PinMuxConfig();
 
     PRCMPeripheralClkEnable(PRCM_GSPI,PRCM_RUN_MODE_CLK);
@@ -333,53 +279,13 @@ main()
     
     PRCMPeripheralReset(PRCM_GSPI);//Reset Peripheral
 
-    //Enable Direct Memory Access
-    //UDMAInit();
-
     MasterConfig();
 
 
-
-    /*complex v[N], v1[N], scratch[N];
-    int k;
-
-
-    for (k = 0; k<N; k++) {
-        v[k].Re = .125*cos(2 * PI*k / (double)N);
-        v[k].Im = sin(2 * PI*k / (double)N);
-    }
-    Message("\nCHECK0\n");
-
-    for(k=0;k<N;k++){
-        Report("Orig %d: %f + j%f\n\r",k,v[k].Re,v[k].Im);
-    }
-    FFT(v, N, scratch);
-    for(k=0;k<N;k++){
-        Report("FFT %d: %f + j%f\n\r",k,v[k].Re,v[k].Im);
-    }
-    IFFT(v, N, scratch);
-    for(k=0;k<N;k++){
-        Report("IFFT %d: %f + j%f\n\r",k,v[k].Re,v[k].Im);
-    }*/
-
     while(1){
         receive_process();
-        //HeartBeat();
-        //printf("%d\n",txBuffIndex++);
+        
     }
 
-    //
-    // Start the LEDBlinkyRoutine
-    //
-    //LEDBlinkyRoutine();
-    //BinCount();
-    //Stepper();
     return 0;
 }
-
-//*****************************************************************************
-//
-// Close the Doxygen group.
-//! @}
-//
-//*****************************************************************************
