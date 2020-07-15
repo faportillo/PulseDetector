@@ -149,7 +149,7 @@ float get_freq(complex adc_d[], complex scratch[]){
     max = sqrt((adc_d[1].Re*adc_d[1].Re)+(adc_d[1].Im*adc_d[1].Im)); //adc_d[0] is the DC component
     int idx;
     int abs_complex=0;
-    for(idx=1;idx<N;idx++){
+    for(idx=2;idx<N;idx++){
         abs_complex=sqrt((adc_d[idx].Re*adc_d[idx].Re)+(adc_d[idx].Im*adc_d[idx].Im));
         if(abs_complex>max){
             max=abs_complex;
